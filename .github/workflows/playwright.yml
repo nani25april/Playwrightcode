@@ -1,0 +1,93 @@
+name: Playwright CI
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'tests/**'
+      - 'pages/**'
+      - 'test-data/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/playwright.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'tests/**'
+      - 'pages/**'
+      - 'test-data/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/playwright.yml'
+
+jobs:
+  playwright:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    env:
+      BASE_URL: https://itn-uat.ibdic.in
+      LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+      LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+      USER_2_EMAIL: ${{ secrets.USER_2_EMAIL }}
+      USER_2_PASSWORD: ${{ secrets.USER_2_PASSWORD }}
+      ISSUANCE_CORPORATE_MAKER_EMAIL: ${{ secrets.ISSUANCE_CORPORATE_MAKER_EMAIL }}
+      ISSUANCE_CORPORATE_MAKER_PASSWORD: ${{ secrets.ISSUANCE_CORPORATE_MAKER_PASSWORD }}
+      ISSUANCE_CORPORATE_CHECKER_EMAIL: ${{ secrets.ISSUANCE_CORPORATE_CHECKER_EMAIL }}
+      ISSUANCE_CORPORATE_CHECKER_PASSWORD: ${{ secrets.ISSUANCE_CORPORATE_CHECKER_PASSWORD }}
+      ISSUANCE_BANK_CHECKER_EMAIL: ${{ secrets.ISSUANCE_BANK_CHECKER_EMAIL }}
+      ISSUANCE_BANK_CHECKER_PASSWORD: ${{ secrets.ISSUANCE_BANK_CHECKER_PASSWORD }}
+      ISSUANCE_BANK_INPUTTER_EMAIL: ${{ secrets.ISSUANCE_BANK_INPUTTER_EMAIL }}
+      ISSUANCE_BANK_INPUTTER_PASSWORD: ${{ secrets.ISSUANCE_BANK_INPUTTER_PASSWORD }}
+      ISSUANCE_BANK_AUTHORISER_EMAIL: ${{ secrets.ISSUANCE_BANK_AUTHORISER_EMAIL }}
+      ISSUANCE_BANK_AUTHORISER_PASSWORD: ${{ secrets.ISSUANCE_BANK_AUTHORISER_PASSWORD }}
+      ADVISING_BANK_CHECKER_EMAIL: ${{ secrets.ADVISING_BANK_CHECKER_EMAIL }}
+      ADVISING_BANK_CHECKER_PASSWORD: ${{ secrets.ADVISING_BANK_CHECKER_PASSWORD }}
+      ADVISING_BANK_INPUTTER_EMAIL: ${{ secrets.ADVISING_BANK_INPUTTER_EMAIL }}
+      ADVISING_BANK_INPUTTER_PASSWORD: ${{ secrets.ADVISING_BANK_INPUTTER_PASSWORD }}
+      ADVISING_BANK_AUTHORISER_EMAIL: ${{ secrets.ADVISING_BANK_AUTHORISER_EMAIL }}
+      ADVISING_BANK_AUTHORISER_PASSWORD: ${{ secrets.ADVISING_BANK_AUTHORISER_PASSWORD }}
+      CORPORATE_SELLER_MAKER_EMAIL: ${{ secrets.CORPORATE_SELLER_MAKER_EMAIL }}
+      CORPORATE_SELLER_MAKER_PASSWORD: ${{ secrets.CORPORATE_SELLER_MAKER_PASSWORD }}
+      CORPORATE_SELLER_CHECKER_EMAIL: ${{ secrets.CORPORATE_SELLER_CHECKER_EMAIL }}
+      CORPORATE_SELLER_CHECKER_PASSWORD: ${{ secrets.CORPORATE_SELLER_CHECKER_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run targeted Playwright test
+        run: npx playwright test tests/login.spec.ts --project=desktop-chrome --reporter=line,html --output=test-results
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failures
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 30
