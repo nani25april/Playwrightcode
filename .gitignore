@@ -4,3 +4,9 @@ test-results/
 blob-report/
 .env
 *.log
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

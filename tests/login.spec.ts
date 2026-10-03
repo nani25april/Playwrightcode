@@ -30,7 +30,7 @@ test.describe('Fresh LC issuance flow', () => {
     });
   });
 
-  test('completes Transaction Details and opens LC Details', async ({ page, user2LoginPage, user2Page }) => {
+  test('completes Transaction Details and opens LC Details', async ({ page, openUser2Session }) => {
     test.setTimeout(300_000);
     test.skip(
       !Object.values(collateralBackedData).every(Boolean),
@@ -87,7 +87,9 @@ test.describe('Fresh LC issuance flow', () => {
     await expect(page.getByText('Dashboards', { exact: true }).first()).toBeVisible({ timeout: 30_000 });
     await lcDashboardPage.searchInReview(lcReferenceNumber);
 
-    // Start user 2 only after user 1 has completed the workflow.
+    // Open user 2 only after user 1 has completed the maker workflow.
+    const user2 = await openUser2Session();
+    const { page: user2Page, loginPage: user2LoginPage } = user2;
     await user2LoginPage.open();
     await user2LoginPage.login({
       email: requiredCredential('ISSUANCE_CORPORATE_CHECKER_EMAIL'),
@@ -107,8 +109,9 @@ test.describe('Fresh LC issuance flow', () => {
     await user2ReviewPage.confirm();
     await user2ReviewPage.backToDashboard();
     await expect(user2Page.getByText('Dashboards', { exact: true }).first()).toBeVisible({ timeout: 30_000 });
+    await user2.close();
 
-    const bankContext = await user2Page.context().browser()!.newContext({
+    const bankContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const bankCheckerPage = await bankContext.newPage();
@@ -130,7 +133,7 @@ test.describe('Fresh LC issuance flow', () => {
     await bankCheckerReviewPage.backToDashboard();
     await bankContext.close();
 
-    const bankInputterContext = await user2Page.context().browser()!.newContext({
+    const bankInputterContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const bankInputterPage = await bankInputterContext.newPage();
@@ -161,7 +164,7 @@ test.describe('Fresh LC issuance flow', () => {
     await bankInputterReviewPage.backToDashboard();
     await bankInputterContext.close();
 
-    const bankAuthoriserContext = await user2Page.context().browser()!.newContext({
+    const bankAuthoriserContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const bankAuthoriserPage = await bankAuthoriserContext.newPage();
@@ -186,7 +189,7 @@ test.describe('Fresh LC issuance flow', () => {
     await bankAuthoriserReviewPage.backToDashboard();
     await bankAuthoriserContext.close();
 
-    const advisingCheckerContext = await user2Page.context().browser()!.newContext({
+    const advisingCheckerContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const advisingCheckerPage = await advisingCheckerContext.newPage();
@@ -206,7 +209,7 @@ test.describe('Fresh LC issuance flow', () => {
     await advisingCheckerReviewPage.backToDashboard();
     await advisingCheckerContext.close();
 
-    const advisingInputterContext = await user2Page.context().browser()!.newContext({
+    const advisingInputterContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const advisingInputterPage = await advisingInputterContext.newPage();
@@ -243,7 +246,7 @@ test.describe('Fresh LC issuance flow', () => {
     await advisingInputterReviewPage.backToDashboard();
     await advisingInputterContext.close();
 
-    const advisingAuthoriserContext = await user2Page.context().browser()!.newContext({
+    const advisingAuthoriserContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat-hdfc.ibdic.in'
     });
     const advisingAuthoriserPage = await advisingAuthoriserContext.newPage();
@@ -266,7 +269,7 @@ test.describe('Fresh LC issuance flow', () => {
     await advisingAuthoriserReviewPage.backToDashboard();
     await advisingAuthoriserContext.close();
 
-    const sellerMakerContext = await user2Page.context().browser()!.newContext({
+    const sellerMakerContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat.ibdic.in'
     });
     const sellerMakerPage = await sellerMakerContext.newPage();
@@ -292,7 +295,7 @@ test.describe('Fresh LC issuance flow', () => {
     await sellerMakerReviewPage.backToDashboard();
     await sellerMakerContext.close();
 
-    const sellerCheckerContext = await user2Page.context().browser()!.newContext({
+    const sellerCheckerContext = await page.context().browser()!.newContext({
       baseURL: 'https://itn-uat.ibdic.in'
     });
     const sellerCheckerPage = await sellerCheckerContext.newPage();
@@ -322,3 +325,4 @@ test.describe('Fresh LC issuance flow', () => {
     await sellerCheckerContext.close();
   });
 });
+

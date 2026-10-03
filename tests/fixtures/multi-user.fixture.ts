@@ -1,24 +1,36 @@
 import { test as base, type BrowserContext, type Page } from '@playwright/test';
 import { LoginPage } from '../../pages/LoginPage';
 
-type MultiUserFixtures = {
-  user2Context: BrowserContext;
-  user2Page: Page;
-  user2LoginPage: LoginPage;
+type User2Session = {
+  context: BrowserContext;
+  page: Page;
+  loginPage: LoginPage;
+  close: () => Promise<void>;
 };
 
-/** A second isolated browser session; the default `page` fixture is user 1. */
+type MultiUserFixtures = {
+  openUser2Session: () => Promise<User2Session>;
+};
+
+/** Opens a second isolated session on demand; call only after user 1 is finished. */
 export const test = base.extend<MultiUserFixtures>({
-  user2Context: async ({ browser }, use) => {
-    const context = await browser.newContext();
-    await use(context);
-    await context.close();
-  },
-  user2Page: async ({ user2Context }, use) => {
-    await use(await user2Context.newPage());
-  },
-  user2LoginPage: async ({ user2Page }, use) => {
-    await use(new LoginPage(user2Page));
+  openUser2Session: async ({ browser }, use) => {
+    let context: BrowserContext | undefined;
+    const close = async () => {
+      if (context) {
+        await context.close();
+        context = undefined;
+      }
+    };
+
+    await use(async () => {
+      if (context) throw new Error('User 2 session is already open. Close it before opening another.');
+      context = await browser.newContext();
+      const page = await context.newPage();
+      return { context, page, loginPage: new LoginPage(page), close };
+    });
+
+    await close();
   }
 });
 
