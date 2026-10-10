@@ -37,10 +37,6 @@ export const test = base.extend<MultiUserFixtures>({
 export { expect } from '@playwright/test';
 
 export function requiredCredential(name:
-  | 'LOGIN_EMAIL'
-  | 'LOGIN_PASSWORD'
-  | 'USER_2_EMAIL'
-  | 'USER_2_PASSWORD'
   | 'ISSUANCE_CORPORATE_MAKER_EMAIL'
   | 'ISSUANCE_CORPORATE_MAKER_PASSWORD'
   | 'ISSUANCE_CORPORATE_CHECKER_EMAIL'

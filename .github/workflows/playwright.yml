@@ -29,10 +29,6 @@ jobs:
 
     env:
       BASE_URL: https://itn-uat.ibdic.in
-      LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-      LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-      USER_2_EMAIL: ${{ secrets.USER_2_EMAIL }}
-      USER_2_PASSWORD: ${{ secrets.USER_2_PASSWORD }}
       ISSUANCE_CORPORATE_MAKER_EMAIL: ${{ secrets.ISSUANCE_CORPORATE_MAKER_EMAIL }}
       ISSUANCE_CORPORATE_MAKER_PASSWORD: ${{ secrets.ISSUANCE_CORPORATE_MAKER_PASSWORD }}
       ISSUANCE_CORPORATE_CHECKER_EMAIL: ${{ secrets.ISSUANCE_CORPORATE_CHECKER_EMAIL }}
@@ -69,10 +65,6 @@ jobs:
         run: |
           set -e
           required_vars=(
-            LOGIN_EMAIL
-            LOGIN_PASSWORD
-            USER_2_EMAIL
-            USER_2_PASSWORD
             ISSUANCE_CORPORATE_MAKER_EMAIL
             ISSUANCE_CORPORATE_MAKER_PASSWORD
             ISSUANCE_CORPORATE_CHECKER_EMAIL
