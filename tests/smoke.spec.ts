@@ -11,6 +11,7 @@ import { LcDashboardPage } from '../pages/LcDashboardPage';
 import { ReviewPage } from '../pages/ReviewPage';
 import { TransactionDetailsPage } from '../pages/TransactionDetailsPage';
 import { AttachmentsPage } from '../pages/AttachmentsPage';
+import { syntheticAttachment } from './fixtures/syntheticAttachment';
 import { expect, requiredCredential, test } from './fixtures/multi-user.fixture';
 import {
   collateralBackedData,
@@ -104,7 +105,7 @@ test.describe.serial('LC issuance smoke workflow by party', () => {
         const attachments = new AttachmentsPage(page);
         
         await attachments.expectLoaded();
-        await attachments.uploadFile('tests/fixtures/IBDIC.svg');
+        await attachments.uploadFile(syntheticAttachment);
         await attachments.clickNext();
 
         const review = new ReviewPage(page);

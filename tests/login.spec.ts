@@ -11,6 +11,7 @@ import { BankDashboardPage } from '../pages/BankDashboardPage';
 import { BankInputterPage } from '../pages/BankInputterPage';
 import { BankAuthoriserPage } from '../pages/BankAuthoriserPage';
 import { CorporateAcceptancePage } from '../pages/CorporateAcceptancePage';
+import { syntheticAttachment } from './fixtures/syntheticAttachment';
 import {
   collateralBackedData,
   lcDetailsData,
@@ -75,7 +76,7 @@ test.describe('Fresh LC issuance flow', () => {
     await bankChargesPage.clickNext();
 
     await attachmentsPage.expectLoaded();
-    await attachmentsPage.uploadFile('tests/fixtures/IBDIC.svg');
+    await attachmentsPage.uploadFile(syntheticAttachment);
     await attachmentsPage.clickNext();
     await reviewPage.expectLoaded();
     await reviewPage.acceptDeclarations();

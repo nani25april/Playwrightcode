@@ -8,13 +8,15 @@ export class AttachmentsPage extends BasePage {
     await expect(this.page.getByRole('heading', { name: 'Attachments', exact: true })).toBeVisible();
   }
 
-  async uploadFile(filePath: string): Promise<void> {
+  async uploadFile(file: string | { name: string; mimeType: string; buffer: Buffer }): Promise<void> {
     const [fileChooser] = await Promise.all([
       this.page.waitForEvent('filechooser'),
       this.page.getByText('Click here', { exact: true }).click()
     ]);
-    await fileChooser.setFiles(filePath);
-    await expect(this.page.getByText('File Uploaded Successfully', { exact: true })).toBeVisible({
+    await fileChooser.setFiles(file);
+    const fileName = typeof file === 'string' ? file.split(/[\\/]/).pop() ?? file : file.name;
+    const displayedName = fileName.replace(/\.[^.]+$/, '');
+    await expect(this.page.getByText(displayedName, { exact: true })).toBeVisible({
       timeout: 30_000
     });
   }
