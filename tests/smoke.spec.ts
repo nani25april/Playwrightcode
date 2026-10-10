@@ -59,7 +59,7 @@ let buyerBankTransactionReference: string | undefined;
 let sellerBankTransactionReference: string | undefined;
 
 test.describe.serial('LC issuance smoke workflow by party', () => {
-  test('01 - Buyer maker creates and submits a fresh LC', async ({ browser }) => {
+  test.only('01 - Buyer maker creates and submits a fresh LC', async ({ browser }) => {
     test.setTimeout(300_000);
     test.skip(
       !Object.values(collateralBackedData).every(Boolean),
@@ -102,10 +102,13 @@ test.describe.serial('LC issuance smoke workflow by party', () => {
         await bankCharges.clickNext();
 
         const attachments = new AttachmentsPage(page);
+        
         await attachments.expectLoaded();
+        await attachments.uploadFile('C:/Users/HP/Desktop/IBDIC.JPG');
         await attachments.clickNext();
 
         const review = new ReviewPage(page);
+        await review.expectLoaded();
         await review.acceptDeclarations();
         await review.selectBillPurchaseDuringPayment();
         await review.selectWorkflow('1M1c');
