@@ -4,10 +4,16 @@ import { BasePage } from './BasePage';
 export class ReviewPage extends BasePage {
   constructor(page: Page) { super(page); }
 
+  async expectLoaded(): Promise<void> {
+    await expect(this.page.getByRole('heading', { name: 'Request Forwarded To', exact: true })).toBeVisible({
+      timeout: 30_000
+    });
+  }
+
   async acceptDeclarations(): Promise<void> {
-    const declaration = this.page.getByText(/I have read and I accept all the\s*Declarations and Undertakings/i).first();
-    await expect(declaration).toBeVisible();
-    await declaration.click();
+    const acceptanceText = this.page.getByText(/I have read and I accept all the/i);
+    await expect(acceptanceText).toBeVisible({ timeout: 30_000 });
+    await acceptanceText.click();
   }
 
   async selectBillPurchaseDuringPayment(): Promise<void> {
@@ -59,6 +65,7 @@ export class ReviewPage extends BasePage {
     return match[1];
   }
 
+  
   async backToDashboard(): Promise<void> {
     await expect(this.page.getByRole('heading', { name: 'Success', exact: true })).toBeVisible({ timeout: 30_000 });
     await this.page.getByRole('button', { name: 'Back to Dashboard', exact: true }).click();

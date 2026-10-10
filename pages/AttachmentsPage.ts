@@ -6,9 +6,17 @@ export class AttachmentsPage extends BasePage {
 
   async expectLoaded(): Promise<void> {
     await expect(this.page.getByRole('heading', { name: 'Attachments', exact: true })).toBeVisible();
-    const emptyState = this.page.getByText('No document categories are configured for this product and event.', { exact: true });
-    const uploadCategory = this.page.getByRole('button', { name: 'Upload From Vault', exact: true }).first();
-    await expect(emptyState.or(uploadCategory)).toBeVisible();
+  }
+
+  async uploadFile(filePath: string): Promise<void> {
+    const [fileChooser] = await Promise.all([
+      this.page.waitForEvent('filechooser'),
+      this.page.getByText('Click here', { exact: true }).click()
+    ]);
+    await fileChooser.setFiles(filePath);
+    await expect(this.page.getByText('File Uploaded Successfully', { exact: true })).toBeVisible({
+      timeout: 30_000
+    });
   }
 
   async clickNext(): Promise<void> {

@@ -73,9 +73,11 @@ test.describe('Fresh LC issuance flow', () => {
     await expect(page.getByText('Charge Account', { exact: true })).toBeVisible({ timeout: 30_000 });
     await bankChargesPage.selectGstExempted('No');
     await bankChargesPage.clickNext();
+
     await attachmentsPage.expectLoaded();
+    await attachmentsPage.uploadFile('C:/Users/HP/Desktop/IBDIC.JPG');
     await attachmentsPage.clickNext();
-    await expect(page.getByText('Review', { exact: true }).last()).toBeVisible({ timeout: 30_000 });
+    await reviewPage.expectLoaded();
     await reviewPage.acceptDeclarations();
     await reviewPage.selectBillPurchaseDuringPayment();
     await reviewPage.selectWorkflow('1M1c');
@@ -325,4 +327,3 @@ test.describe('Fresh LC issuance flow', () => {
     await sellerCheckerContext.close();
   });
 });
-
