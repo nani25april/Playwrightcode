@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#f4f7fb"/>
+  <rect x="24" y="24" width="592" height="312" rx="16" fill="#fff" stroke="#2457a6" stroke-width="4"/>
+  <path d="M64 250 190 124l86 86 64-64 136 136H64Z" fill="#dbeafe"/>
+  <circle cx="460" cy="106" r="30" fill="#fbbf24"/>
+  <text x="64" y="82" font-family="Arial, sans-serif" font-size="26" fill="#17365d">Synthetic test attachment</text>
+</svg>

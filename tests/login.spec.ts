@@ -75,7 +75,7 @@ test.describe('Fresh LC issuance flow', () => {
     await bankChargesPage.clickNext();
 
     await attachmentsPage.expectLoaded();
-    await attachmentsPage.uploadFile('C:/Users/HP/Desktop/IBDIC.JPG');
+    await attachmentsPage.uploadFile('tests/fixtures/IBDIC.svg');
     await attachmentsPage.clickNext();
     await reviewPage.expectLoaded();
     await reviewPage.acceptDeclarations();

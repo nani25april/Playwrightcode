@@ -104,7 +104,7 @@ test.describe.serial('LC issuance smoke workflow by party', () => {
         const attachments = new AttachmentsPage(page);
         
         await attachments.expectLoaded();
-        await attachments.uploadFile('C:/Users/HP/Desktop/IBDIC.JPG');
+        await attachments.uploadFile('tests/fixtures/IBDIC.svg');
         await attachments.clickNext();
 
         const review = new ReviewPage(page);
